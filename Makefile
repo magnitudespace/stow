@@ -5,8 +5,7 @@ all: container runcontainer
 	@true
 
 container:
-# docker build --no-cache -t builder-stow test/
-	docker build -t builder-stow test/
+	docker build --no-cache -t builder-stow test/
 
 runcontainer:
 	docker run -v $(WORKSPACE):/mnt/stow builder-stow
