@@ -1,25 +1,21 @@
 .PHONY: test
 WORKSPACE = $(shell pwd)
 
-topdir = /tmp/$(pkg)-$(version)
-
 all: container runcontainer
 	@true
 
 container:
-	docker build --no-cache -t builder-stow test/
+# docker build --no-cache -t builder-stow test/
+	docker build -t builder-stow test/
 
 runcontainer:
-	docker run -v $(WORKSPACE):/mnt/src/github.com/graymeta/stow builder-stow
+	docker run -v $(WORKSPACE):/mnt/stow builder-stow
 
 deps:
-	@rm -rf vendor*
-	@which go2xunit || (go get github.com/tebeka/go2xunit)
-	@which dep || (go get -u github.com/golang/dep/cmd/dep)
-	dep ensure
+	go get github.com/tebeka/go2xunit
 
 test: clean deps vet
-	go test -v $(go list ./... | grep -v /vendor/) | tee tests.out
+	go test -v  $(go list ./... | grep -v /vendor/) | tee tests.out
 	go2xunit -fail -input tests.out -output tests.xml
 
 vet:
